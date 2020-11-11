@@ -97,11 +97,15 @@ module ActiveSupport
       end
 
       # Increment an integer value in the cache.
+      # If the key is not found, the :initial option value is stored.
+      # Without the :initial option, nothing is done.
       def increment(name, amount = 1, options = nil)
         modify_value(name, amount, options)
       end
 
       # Decrement an integer value in the cache.
+      # If the key is not found, the :initial option value is stored.
+      # Without the :initial option, nothing is done.
       def decrement(name, amount = 1, options = nil)
         modify_value(name, -amount, options)
       end
@@ -177,6 +181,10 @@ module ActiveSupport
           synchronize do
             if num = read(name, options)
               num = num.to_i + amount
+              write(name, num, options)
+              num
+            elsif initial = options[:initial]
+              num = initial.to_i
               write(name, num, options)
               num
             end

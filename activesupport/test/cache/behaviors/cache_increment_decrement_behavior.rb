@@ -11,6 +11,9 @@ module CacheIncrementDecrementBehavior
 
     missing = @cache.increment("bar")
     assert(missing.nil? || missing == 1)
+
+    assert_equal 1, @cache.increment("baz", 1, initial: 1).to_i
+    assert_equal 2, @cache.increment("baz", 1, initial: 1).to_i
   end
 
   def test_decrement
@@ -23,5 +26,8 @@ module CacheIncrementDecrementBehavior
 
     missing = @cache.decrement("bar")
     assert(missing.nil? || missing == -1)
+
+    initial = @cache.decrement("baz", 1, initial: -1).to_i
+    assert([-1, 0xffffffffffffffff].include?(initial))
   end
 end
